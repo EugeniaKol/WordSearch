@@ -27,7 +27,11 @@ The puzzle itself presents a field which is a grid of letters with words placed 
 
 ## Overview
 
+The project will be made of multiple Golang packages
 
+- a package containing the puzzle logic - finding and checking words, counting the score
+- a package for collecting input for creating the puzzle field
+- a package for interacting with Leaderboard interface
 
 
 
