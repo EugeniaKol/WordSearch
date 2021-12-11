@@ -32,3 +32,4 @@ The puzzle itself presents a field which is a grid of letters with words placed 
 
 
 #### **System-context-diagram**
+![](http://www.plantuml.com/plantuml/png/bO-nRW8n44HxVyM8j84Fu0JY0z95KUh57hYJV3RnhfFmzp4-AKJfSBNopCxEEwX9iJf7vsEk0HwYMBtd4bufnOyuoqpeLOtp2ayI9yzZh1pYbBZzdJOXcp4Cnc_hlyw9jrmWFUzDMHxSncwtXtSf6n5vCkGJnA4zNoX697xXD366PoWDaobAZTG1YslCMRau82dW4kKwTEbpQgkH4bYEMKfmRFBja7FEv_cI4vEXJRtxoztu6C8jOBrk4DZYJmWAFohLdCTci-zd_klQAYZT0b-cyzZfcxFNLyk57QbUWXXX8w6-VTv13csgS_m1)
