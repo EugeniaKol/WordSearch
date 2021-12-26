@@ -2,14 +2,20 @@ package main
 
 import (
 	"io"
+	"strings"
 )
 
 //structs for game logic
 
+type Cell struct {
+	Char  string
+	Found bool
+}
+
 type Field struct {
 	Width  int
 	Height int
-	Grid   [][]string
+	Grid   [][]Cell
 	Words  []string
 	Items  []*Item
 	Score  *Score
@@ -36,10 +42,38 @@ func (f *Field) Fill() {
 
 }
 
+func sgn(a int) int {
+	switch {
+	case a < 0:
+		return -1
+	case a > 0:
+		return +1
+	}
+	return 0
+}
+
 //method that fills the grid with words according to their positions
 
 func (f *Field) SetWords() {
+	for i := 0; i < f.Height; i++ {
+		f.Grid = append(f.Grid, make([]Cell, f.Width))
+	}
 
+	for _, item := range f.Items {
+		chars := strings.Split(item.Word, "")
+		start, end := item.Position.Beginning, item.Position.End
+		i, j := start[0], start[1]
+
+		var shift [2]int
+		shift[0] = sgn(end[0] - start[0])
+		shift[1] = sgn(end[1] - start[1])
+
+		for _, char := range chars {
+			f.Grid[i][j].Char = char
+			i += shift[0]
+			j += shift[1]
+		}
+	}
 }
 
 //method that takes coordinates of a grid and returns a bool
@@ -72,6 +106,13 @@ func main() {
 				Position: Position{
 					Beginning: [2]int{6, 5},
 					End:       [2]int{1, 0},
+				},
+			},
+			{
+				Word: "garden",
+				Position: Position{
+					Beginning: [2]int{0, 0},
+					End:       [2]int{0, 5},
 				},
 			},
 		},
