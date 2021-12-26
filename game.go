@@ -2,7 +2,9 @@ package main
 
 import (
 	"io"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 //structs for game logic
@@ -39,17 +41,16 @@ type Score struct {
 //method that fills a grid with random letters
 
 func (f *Field) Fill() {
+	rand.Seed(time.Now().UnixNano())
+	var letters = []rune("abcdefghijklmnopqrstuvwxyz")
 
-}
-
-func sgn(a int) int {
-	switch {
-	case a < 0:
-		return -1
-	case a > 0:
-		return +1
+	for i := 0; i < f.Height; i++ {
+		for j := 0; j < f.Width; j++ {
+			if f.Grid[i][j].Char == "" {
+				f.Grid[i][j].Char = string(letters[rand.Intn(len(letters))])
+			}
+		}
 	}
-	return 0
 }
 
 //method that fills the grid with words according to their positions
@@ -102,6 +103,13 @@ func main() {
 		Words:  []string{"garden", "search", "message", "son", "icecream"},
 		Items: []*Item{
 			{
+				Word: "garden",
+				Position: Position{
+					Beginning: [2]int{0, 0},
+					End:       [2]int{0, 5},
+				},
+			},
+			{
 				Word: "search",
 				Position: Position{
 					Beginning: [2]int{6, 5},
@@ -109,10 +117,31 @@ func main() {
 				},
 			},
 			{
-				Word: "garden",
+				Word: "message",
 				Position: Position{
-					Beginning: [2]int{0, 0},
-					End:       [2]int{0, 5},
+					Beginning: [2]int{6, 4},
+					End:       [2]int{0, 4},
+				},
+			},
+			{
+				Word: "son",
+				Position: Position{
+					Beginning: [2]int{0, 8},
+					End:       [2]int{2, 6},
+				},
+			},
+			{
+				Word: "icecream",
+				Position: Position{
+					Beginning: [2]int{8, 9},
+					End:       [2]int{8, 2},
+				},
+			},
+			{
+				Word: "testing",
+				Position: Position{
+					Beginning: [2]int{6, 6},
+					End:       [2]int{0, 0},
 				},
 			},
 		},
