@@ -37,6 +37,7 @@ type Position struct {
 type Score struct {
 	Discovered int
 	Points     int
+	Streak     int
 }
 
 //method that fills a grid with random letters
@@ -78,6 +79,18 @@ func (f *Field) SetWords() {
 	}
 }
 
+//method that updates user score after entering a word
+func (f *Field) UpdateScore(word string, success bool) {
+	if success {
+		f.Score.Discovered++
+		f.Score.Streak++
+		f.Score.Points += len(word)*100 + (f.Score.Streak-1)*100
+	} else {
+		f.Score.Streak = 0
+		f.Score.Points -= 100
+	}
+}
+
 //method that takes coordinates of a grid and returns a bool
 //meaning 'true' if the word is there
 
@@ -86,7 +99,7 @@ func (f *Field) Check(input Position) (bool, string) {
 		if input.Beginning == p.Position.Beginning {
 			if input.End == p.Position.End {
 				p.Found = true
-				f.Score.Points += 100 * len(p.Word)
+				f.UpdateScore(p.Word, true)
 
 				chars := strings.Split(p.Word, "")
 				start, end := p.Position.Beginning, p.Position.End
@@ -105,7 +118,7 @@ func (f *Field) Check(input Position) (bool, string) {
 			}
 		}
 	}
-	f.Score.Points -= 100
+	f.UpdateScore("", false)
 	return false, ""
 }
 
