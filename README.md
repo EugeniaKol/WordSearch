@@ -1,4 +1,4 @@
-
+## Word Search
 
 WordSearch game is a popular puzzle type used for entertainment, working with new words in class and on websites dedicated to fiction trivias. 
 
