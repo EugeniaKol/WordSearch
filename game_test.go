@@ -1,9 +1,11 @@
 package main
 
 import (
-	. "gopkg.in/check.v1"
+	"reflect"
 	"strings"
 	"testing"
+
+	. "gopkg.in/check.v1"
 )
 
 func Test(t *testing.T) {
@@ -13,6 +15,42 @@ func Test(t *testing.T) {
 type MySuite struct{}
 
 var _ = Suite(&MySuite{})
+
+//test for a method that fills all empty cells in a Grid with random letters
+
+func (s *MySuite) TestFill(c *C) {
+	field := &Field{
+		Width:  5,
+		Height: 5,
+		Words:  []string{"test"},
+		Items: []*Item{
+			{
+				Word: "test",
+				Position: Position{
+					Beginning: [2]int{0, 1},
+					End:       [2]int{0, 4},
+				},
+			},
+		},
+	}
+	field.SetWords()
+
+	for _, testCase := range []struct {
+		input *Field
+	}{
+		{
+			input: field,
+		},
+	} {
+		testCase.input.Fill()
+
+		for i := 0; i < testCase.input.Height; i++ {
+			for j := 0; j < testCase.input.Width; j++ {
+				c.Assert(testCase.input.Grid[i][j].Char, Not(Equals), "")
+			}
+		}
+	}
+}
 
 //test for a method that fills a Grid of a Field struct
 //with words passed as an Item struct
@@ -93,6 +131,73 @@ func (s *MySuite) TestSetWords(c *C) {
 				j += shift[1]
 			}
 		}
+	}
+}
+
+//test for the method that updates user score
+//increases total score in case of success and decreases in case of fail
+
+func (s *MySuite) TestUpdateScore(c *C) {
+	var field Field
+	for _, testCase := range []struct {
+		before   Score
+		word     string
+		success  bool
+		expected Score
+	}{
+		{
+			before: Score{
+				Discovered: 0,
+				Points:     0,
+				Streak:     0,
+			},
+
+			word:    "word",
+			success: true,
+
+			expected: Score{
+				Discovered: 1,
+				Points:     400,
+				Streak:     1,
+			},
+		},
+		{
+			before: Score{
+				Discovered: 4,
+				Points:     1000,
+				Streak:     3,
+			},
+
+			word:    "word",
+			success: true,
+
+			expected: Score{
+				Discovered: 5,
+				Points:     1700,
+				Streak:     4,
+			},
+		},
+		{
+			before: Score{
+				Discovered: 5,
+				Points:     1700,
+				Streak:     4,
+			},
+
+			word:    "word",
+			success: false,
+
+			expected: Score{
+				Discovered: 5,
+				Points:     1600,
+				Streak:     0,
+			},
+		},
+	} {
+		field.Score = &testCase.before
+		field.UpdateScore(testCase.word, testCase.success)
+		equal := reflect.DeepEqual(testCase.expected, *field.Score)
+		c.Assert(equal, Equals, true)
 	}
 }
 
