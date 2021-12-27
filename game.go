@@ -1,11 +1,8 @@
 package main
 
 import (
-	"bufio"
-	"errors"
-	"io"
 	"math/rand"
-	"strconv"
+	"os"
 	"strings"
 	"time"
 )
@@ -83,6 +80,7 @@ func (f *Field) SetWords() {
 }
 
 //method that updates user score after entering a word
+
 func (f *Field) UpdateScore(word string, success bool) {
 	if success {
 		f.Score.Discovered++
@@ -128,67 +126,32 @@ func (f *Field) Check(input Position) (bool, string) {
 //method that ties together game's logic and user input/output
 
 func (f *Field) Game() {
+	f.Score = &Score{}
+	for {
+		f.Format()
 
-}
+		position, finish, err := f.Parse(os.Stdin)
+		if err != nil {
+			continue
+		}
+		if finish {
+			break
+		}
+		found, word := f.Check(position)
 
-//method for parsing user input
+		if found {
+			fg.Print("A Word found - ")
+			fc.Print(word)
+			fg.Println("! Well done!")
+		} else {
+			fr.Println("You were wrong, try again :(")
+		}
 
-func (f *Field) Parse(r io.Reader) (Position, bool, error) {
-	var position Position
-	var err error
-
-	fc.Print("Beginning coordinate is ")
-	scanner := bufio.NewScanner(r)
-	scanner.Split(bufio.ScanLines)
-	scanner.Scan()
-
-	coords := strings.Split(scanner.Text(), " ")
-	if coords[0] == "finish" {
-		fg.Println("Congratulations! Your score is ", f.Score.Points)
-		return position, true, nil
+		time.Sleep(1 * time.Second)
+		if f.Score.Discovered == len(f.Items) {
+			f.Format()
+			fg.Println("Congratulations! Your score is", f.Score.Points)
+			break
+		}
 	}
-	position.Beginning[0], err = strconv.Atoi(coords[1])
-	if err != nil {
-		fr.Println("Invalid input - correct format is LETTER number")
-		return Position{}, false, errors.New("invalid input")
-	}
-	rs := []rune(coords[0])
-	index := int(rs[0])
-
-	if index > 90 || index < 30 {
-		fr.Println("Invalid input - correct format is LETTER number")
-		return Position{}, false, errors.New("invalid input")
-	}
-	position.Beginning[1] = index - 65
-
-	fc.Print("End coordinate is ")
-	scanner.Scan()
-
-	coords = strings.Split(scanner.Text(), " ")
-	if coords[0] == "finish" {
-		fg.Println("Congratulations! Your score is ", f.Score.Points)
-		return position, true, nil
-	}
-
-	position.End[0], err = strconv.Atoi(coords[1])
-	if err != nil {
-		fr.Println("Invalid input - correct format is LETTER number")
-		return Position{}, false, errors.New("invalid input")
-	}
-
-	rs = []rune(coords[0])
-	index = int(rs[0])
-	if index > 90 || index < 30 {
-		fr.Println("Invalid input - correct format is LETTER number")
-		return Position{}, false, errors.New("invalid input")
-	}
-	position.End[1] = index - 65
-
-	return position, false, nil
-}
-
-func main() {
-	field.SetWords()
-	field.Fill()
-	field.Game()
 }
