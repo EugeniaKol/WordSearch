@@ -1,4 +1,4 @@
-### Context and scope
+
 
 WordSearch game is a popular puzzle type used for entertainment, working with new words in class and on websites dedicated to fiction trivias. 
 
@@ -24,5 +24,4 @@ The project will be made of a Golang package
 
 - containing the puzzle logic - finding and checking words, counting the score
 - collecting input for solving the puzzle 
-
 
